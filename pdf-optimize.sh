@@ -1,19 +1,28 @@
-#!/bin/sh -x
+#!/bin/sh -e
 
 for=screen
 
+if [ -z "$1" ] ; then
+
+echo "Usage: $0 file.pdf [screen]"
+
 cat << _FOR_OPTIONS_
-# screen   low-resolution "Screen Optimized"
-# ebook    medium-resolution "eBook"
-# printer  output "Print Optimized"
+# screen   low-resolution "Screen Optimized" 96 dpi
+# ebook    medium-resolution "eBook"         150 dpi
+# printer  output "Print Optimized"          300 dpi
 # prepress output "Prepress Optimized"
 # default
+# kindle - special conversion to grayscale, 150 dpi
 _FOR_OPTIONS_
+
+exit 1
+
+fi
 
 test ! -z "$2" && for=$2
 to=`echo $1 | sed "s/\.pdf/-$for.pdf/i"`
 
-test "$for" == "kindle" && for="ebook 
+test "$for" = "kindle" && for="ebook 
 	-sColorConversionStrategy=Gray -dProcessColorModel=/DeviceGray
 
 	-dAutoFilterColorImages=false -dColorImageFilter=/DCTEncode
